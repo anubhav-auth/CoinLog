@@ -33,7 +33,9 @@ fun BottomMenu(
     items: List<BottomMenuContent>,
     viewmodel: FinanceViewmodel
 ) {
-
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -41,6 +43,7 @@ fun BottomMenu(
             .padding(horizontal = 18.dp)
             .padding(bottom = 18.dp)
             .clip(RoundedCornerShape(36.dp))
+            .clickable(interactionSource = interactionSource, indication = null) { }
             .background(Color.DarkGray)
             .padding(top = 9.dp)
             .fillMaxWidth()
@@ -49,9 +52,9 @@ fun BottomMenu(
         items.forEachIndexed { index, item2 ->
             BottomMenuItem(
                 item = item2,
-                isSelected = index == viewmodel.selectedItemIndex
+                isSelected = index == viewmodel.selectedBottomItemIndex
             ) {
-                viewmodel.selectedItemIndex = index
+                viewmodel.selectedBottomItemIndex = index
             }
         }
     }

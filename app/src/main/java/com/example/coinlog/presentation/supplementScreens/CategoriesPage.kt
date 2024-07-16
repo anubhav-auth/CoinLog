@@ -1,6 +1,7 @@
-package com.example.coinlog.presentation
+package com.example.coinlog.presentation.supplementScreens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,19 +23,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.HelperObj
+import com.example.coinlog.presentation.mainScreens.CategoriesContent
 
 @Composable
-fun CategoriesPage(modifier: Modifier = Modifier) {
+fun CategoriesPage(navController: NavController) {
     Scaffold {
-        Box(modifier = Modifier
-            .padding(it)
-            .fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
             val a = Category.entries.toTypedArray()
             LazyVerticalGrid(columns = GridCells.Fixed(3)) {
                 items(a) { item ->
-                    CategoriesPageItem(item = CategoriesContent(item))
+                    CategoriesPageItem(
+                        item = CategoriesContent(item),
+                        navController = navController
+                    )
                 }
             }
         }
@@ -43,9 +51,11 @@ fun CategoriesPage(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun CategoriesPageItem(item: CategoriesContent) {
+fun CategoriesPageItem(item: CategoriesContent, navController: NavController) {
     Column(
-        modifier = Modifier.padding(12.dp),
+        modifier = Modifier
+            .padding(12.dp)
+            .clickable { navController.navigate("filter_by_category_page/${item.category.ordinal}") },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(

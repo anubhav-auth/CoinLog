@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation
+package com.example.coinlog.presentation.supplementScreens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,13 +23,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,6 +56,8 @@ import com.example.coinlog.R
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
+import com.example.coinlog.presentation.mainScreens.CategoriesContent
+import com.example.coinlog.presentation.mainScreens.toMoneyFormat
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -74,7 +75,9 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
     )
 
     expense?.let {
+
         viewmodel.selectedCategory = it.category
+
         BottomSheetScaffold(
             scaffoldState = scaffoldState,
             sheetContent = {
@@ -165,9 +168,13 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Icon(
-                                            painter = painterResource(id = HelperObj.getIcon(viewmodel.selectedCategory)),
+                                            painter = painterResource(
+                                                id = HelperObj.getIcon(
+                                                    viewmodel.selectedCategory
+                                                )
+                                            ),
                                             contentDescription = it.category.name,
-                                            tint = Color.Black,
+                                            tint = MaterialTheme.colorScheme.onPrimary,
                                             modifier = Modifier
                                                 .size(48.dp)
                                                 .padding(6.dp)
@@ -237,27 +244,50 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
                             scaffoldState = scaffoldState
                         )
                     }
-                    Row (modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween){
-                        Button(onClick = {
-                            navController.navigateUp()
-                            Toast.makeText(context, "Expense deleted successfully", Toast.LENGTH_SHORT).show()
-                            viewmodel.deleteExpense(it)
-                        }) {
+                    Spacer(modifier = Modifier.size(100.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(
+                            modifier = Modifier.width(50.dp),
+                            onClick = {
+                                navController.navigateUp()
+                                Toast.makeText(
+                                    context,
+                                    "Expense deleted successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                viewmodel.deleteExpense(it)
+                            },
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
                             Icon(imageVector = Icons.Outlined.Delete, contentDescription = "delete")
                         }
-                        Button(onClick = {
 
-                        }) {
+                        Button(
+                            modifier = Modifier.width(50.dp),
+                            onClick = {
+                                navController.navigate("edit_transaction")
+                            },
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
                             Icon(imageVector = Icons.Outlined.Edit, contentDescription = "edit")
                         }
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
-                            ),
-                            onClick = {
 
-                        }) {
+                        Button(
+                            modifier = Modifier.width(200.dp),
+                            enabled = viewmodel.selectedCategory != it.category,
+                            onClick = {
+                                val newExpense = it.copy(
+                                    category = viewmodel.selectedCategory
+                                )
+                                viewmodel.updateExpense(it, newExpense)
+                                viewmodel.selectedCategory = Category.Miscellaneous
+                                navController.navigateUp()
+
+                            }
+                        ) {
                             Text(text = "Save")
                         }
                     }
@@ -265,6 +295,12 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
             }
         }
     }
+}
+
+fun getNextUniqueIndices(currentIndex: Int, size: Int): Pair<Int, Int> {
+    val nextIndex1 = (currentIndex + 1) % size
+    val nextIndex2 = (currentIndex + 2) % size
+    return Pair(nextIndex1, nextIndex2)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -275,15 +311,28 @@ fun CategorySmallChoice(
     scaffoldState: BottomSheetScaffoldState
 ) {
     val index = category.ordinal
+    val indices = getNextUniqueIndices(index, Category.entries.size)
+
     val scope = rememberCoroutineScope()
     Row {
-        for (i in index..index + 2) {
-            CategoriesDescItem(
-                item = Category.entries[i], img = 0, txt = "", viewmodel = viewmodel
-            ) {
-                viewmodel.selectedCategory = Category.entries[i]
-            }
+
+        CategoriesDescItem(
+            item = Category.entries[index], img = 0, txt = "", viewmodel = viewmodel
+        ) {
+            viewmodel.selectedCategory = Category.entries[index]
         }
+
+        CategoriesDescItem(
+            item = Category.entries[indices.first], img = 0, txt = "", viewmodel = viewmodel
+        ) {
+            viewmodel.selectedCategory = Category.entries[indices.first]
+        }
+        CategoriesDescItem(
+            item = Category.entries[indices.second], img = 0, txt = "", viewmodel = viewmodel
+        ) {
+            viewmodel.selectedCategory = Category.entries[indices.second]
+        }
+
         CategoriesDescItem(
             item = null, img = R.drawable.finance_plus, txt = "More", viewmodel = viewmodel
         ) {

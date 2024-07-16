@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation
+package com.example.coinlog.presentation.mainScreens
 
 import android.icu.text.DecimalFormat
 import androidx.compose.foundation.Image
@@ -37,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -135,8 +134,9 @@ fun Display(
                 CategoriesContent(Category.PersonalCare),
                 CategoriesContent(Category.BillsAndUtilities),
                 CategoriesContent(Category.Commute),
-                CategoriesContent(Category.Miscellaneous),
-            )
+                CategoriesContent(Category.Travel)
+            ),
+            navController = navController
         )
         Spacer(modifier = Modifier.height(21.dp))
         Row(
@@ -150,17 +150,24 @@ fun Display(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
-            Text(text = "See all", color = Color.Gray, textDecoration = TextDecoration.Underline)
+            Text(
+                text = "See all",
+                color = Color.Gray,
+                modifier = Modifier.clickable { navController.navigate("all_expenses_screen") },
+                textDecoration = TextDecoration.Underline
+            )
         }
         Spacer(modifier = Modifier.height(21.dp))
-        TransactionMenu(items = allExpenses, navController = navController, viewmodel = viewmodel)
+        TransactionMenu(
+            items = allExpenses,
+            navController = navController,
+            limitNoOfElements = true
+        )
     }
 }
 
 @Composable
 fun BalanceCard(viewmodel: FinanceViewmodel) {
-    val context = LocalContext.current
-
 
     val summary by viewmodel.currentSummary.collectAsState()
     Box(
@@ -274,23 +281,26 @@ fun BalanceCard(viewmodel: FinanceViewmodel) {
 }
 
 @Composable
-fun CategoriesMenu(items: List<CategoriesContent>) {
+fun CategoriesMenu(items: List<CategoriesContent>, navController: NavController) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         items(items) { item ->
-            CategoriesItem(item = item)
+            CategoriesItem(item = item, navController = navController)
         }
     }
 }
 
 @Composable
-fun CategoriesItem(item: CategoriesContent) {
+fun CategoriesItem(item: CategoriesContent, navController: NavController) {
+
     Column(
-        modifier = Modifier.padding(horizontal = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .padding(horizontal = 12.dp)
+            .clickable { navController.navigate("filter_by_category_page/${item.category.ordinal}") },
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
             modifier = Modifier
@@ -317,32 +327,61 @@ fun CategoriesItem(item: CategoriesContent) {
 
 data class CategoriesContent(val category: Category)
 
+fun groupExpensesByDate(expenses: List<Expenses>): Map<String, List<Expenses>> {
+    val dateFormat = SimpleDateFormat("EEE, dd MMM")
+    return expenses.groupBy { expense ->
+        dateFormat.format(Date(expense.dateAdded))
+    }
+}
+
+
 @Composable
 fun TransactionMenu(
     items: List<Expenses>,
     navController: NavController,
-    viewmodel: FinanceViewmodel
+    limitNoOfElements: Boolean = false
 ) {
+    var groupedExpenses = emptyMap<String, List<Expenses>>()
+
+    if (limitNoOfElements) {
+        groupedExpenses = groupExpensesByDate(items.take(15))
+    } else {
+        groupedExpenses = groupExpensesByDate(items)
+    }
+
     LazyColumn(contentPadding = PaddingValues(bottom = 135.dp)) {
-        items(items) { item ->
-            TransactionItem(item = item, navController = navController, viewmodel = viewmodel)
+        groupedExpenses.forEach { (date, expensesOnDate) ->
+            item {
+                Text(
+                    text = date,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.W400,
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
+            items(expensesOnDate) { item ->
+                TransactionItem(item = item, navController = navController)
+            }
         }
+
+
     }
 }
 
 @Composable
-fun TransactionItem(item: Expenses, navController: NavController, viewmodel: FinanceViewmodel) {
+fun TransactionItem(item: Expenses, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(bottom = 6.dp)
             .clip(RoundedCornerShape(15.dp))
+            .clickable {
+                navController.navigate("transaction_description/${item.id}")
+            }
             .border(width = 1.dp, shape = RoundedCornerShape(15.dp), color = Color.Gray)
             .background(MaterialTheme.colorScheme.primaryContainer)
             .fillMaxWidth()
-            .padding(6.dp)
-            .clickable {
-                navController.navigate("transaction_description/${item.id}")
-            },
+            .padding(6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

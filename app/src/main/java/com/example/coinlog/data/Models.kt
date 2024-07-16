@@ -16,6 +16,18 @@ data class Expenses(
 )
 
 @Entity
+data class Pots(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val title: String,
+    val description: String,
+    val reason: String,
+    val amount: Double,
+//    val transaction: List<Expenses>,
+    val dateAdded: Long
+)
+
+@Entity
 data class Summary(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

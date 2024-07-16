@@ -18,6 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.coinlog.R
 import com.example.coinlog.data.FinanceViewmodel
+import com.example.coinlog.presentation.mainScreens.AnalyticsScreen
+import com.example.coinlog.presentation.mainScreens.Display
+import com.example.coinlog.presentation.mainScreens.PotsScreen
+import com.example.coinlog.presentation.mainScreens.ProfileScreen
 
 @Composable
 fun Main(
@@ -51,7 +55,13 @@ fun Main(
                 .padding(paddingValue)
 
         ) {
-            Display(viewmodel = viewmodel, navController = navController)
+            when (viewmodel.selectedBottomItemIndex) {
+                0 -> Display(viewmodel = viewmodel, navController = navController)
+                1 -> PotsScreen()
+                2 -> AnalyticsScreen()
+                3 -> ProfileScreen()
+            }
+
             BottomMenu(
                 items = listOf(
                     BottomMenuContent("Home", R.drawable.finance_home),

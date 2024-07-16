@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation
+package com.example.coinlog.presentation.supplementScreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -61,6 +61,7 @@ import com.example.coinlog.data.Category
 import com.example.coinlog.data.Expenses
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
+import com.example.coinlog.presentation.mainScreens.CategoriesContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -185,7 +186,6 @@ fun CategorySheetLaunch(
     scope: CoroutineScope,
     viewmodel: FinanceViewmodel
 ) {
-
     Box(
         modifier = Modifier
 
@@ -393,6 +393,7 @@ fun DataEntry(
                     descriptionText = ""
                     amountText = ""
                     viewmodel.selectedCategory = Category.Miscellaneous
+                    viewmodel.selectedItemIndexInEx = 1
                 },
                 modifier = Modifier.width(buttonWidth)
             ) {
@@ -406,6 +407,7 @@ fun DataEntry(
                     descriptionText = ""
                     amountText = ""
                     viewmodel.selectedCategory = Category.Miscellaneous
+                    viewmodel.selectedItemIndexInEx = 1
                 },
                 modifier = Modifier.width(buttonWidth)
             ) {
