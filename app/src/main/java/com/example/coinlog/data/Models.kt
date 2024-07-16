@@ -25,6 +25,7 @@ data class Summary(
 )
 
 enum class Category(private val displayName: String) {
+    Miscellaneous("Miscellaneous"),
     FoodAndDrinks("Food & Drinks"),
     Groceries("Groceries"),
     Shopping("Shopping"),
@@ -48,8 +49,8 @@ enum class Category(private val displayName: String) {
     FeesAndCharges("Fees & Charges"),
     Atm("ATM"),
     Charity("Charity"),
-    MoneyTransfer("Money Transfer"),
-    Miscellaneous("Miscellaneous");
+    MoneyTransfer("Money Transfer");
+
 
     override fun toString(): String {
         return displayName

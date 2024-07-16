@@ -5,31 +5,31 @@ import com.example.coinlog.R
 object HelperObj {
     fun getIcon(category: Category): Int {
         return when (category) {
-            Category.FoodAndDrinks -> R.drawable.ic_launcher_background
-            Category.Groceries -> R.drawable.ic_launcher_background
-            Category.Shopping -> R.drawable.ic_launcher_background
-            Category.Entertainment -> R.drawable.ic_launcher_background
-            Category.Fuel -> R.drawable.ic_launcher_background
-            Category.Commute -> R.drawable.ic_launcher_background
-            Category.Travel -> R.drawable.ic_launcher_background
-            Category.PersonalCare -> R.drawable.ic_launcher_background
-            Category.BillsAndUtilities -> R.drawable.ic_launcher_background
-            Category.Rent -> R.drawable.ic_launcher_background
-            Category.Household -> R.drawable.ic_launcher_background
-            Category.Insurance -> R.drawable.ic_launcher_background
-            Category.Education -> R.drawable.ic_launcher_background
-            Category.Medical -> R.drawable.ic_launcher_background
-            Category.Fitness -> R.drawable.ic_launcher_background
-            Category.FamilyAndPets -> R.drawable.ic_launcher_background
-            Category.Investments -> R.drawable.ic_launcher_background
-            Category.CreditBills -> R.drawable.ic_launcher_background
-            Category.Loans -> R.drawable.ic_launcher_background
-            Category.Emi -> R.drawable.ic_launcher_background
-            Category.FeesAndCharges -> R.drawable.ic_launcher_background
-            Category.Atm -> R.drawable.ic_launcher_background
-            Category.Charity -> R.drawable.ic_launcher_background
-            Category.MoneyTransfer -> R.drawable.ic_launcher_background
-            Category.Miscellaneous -> R.drawable.ic_launcher_background
+            Category.FoodAndDrinks -> R.drawable.finance_food_drinks
+            Category.Groceries -> R.drawable.finance_grocery
+            Category.Shopping -> R.drawable.finance_shopping
+            Category.Entertainment -> R.drawable.finance_entertainment
+            Category.Fuel -> R.drawable.finance_fuel
+            Category.Commute -> R.drawable.finance_commute
+            Category.Travel -> R.drawable.finance_travel
+            Category.PersonalCare -> R.drawable.finance_personal_care
+            Category.BillsAndUtilities -> R.drawable.finance_bill_utilities
+            Category.Rent -> R.drawable.finance_rent
+            Category.Household -> R.drawable.finance_household
+            Category.Insurance -> R.drawable.finance_insurance
+            Category.Education -> R.drawable.finance_education
+            Category.Medical -> R.drawable.finance_medical
+            Category.Fitness -> R.drawable.finance_fitness
+            Category.FamilyAndPets -> R.drawable.finance_family
+            Category.Investments -> R.drawable.finance_investment
+            Category.CreditBills -> R.drawable.finance_credit_bills
+            Category.Loans -> R.drawable.finance_loans
+            Category.Emi -> R.drawable.finance_emi
+            Category.FeesAndCharges -> R.drawable.finance_fees
+            Category.Atm -> R.drawable.finance_atm
+            Category.Charity -> R.drawable.finance_charity
+            Category.MoneyTransfer -> R.drawable.finance_mony_transfer
+            Category.Miscellaneous -> R.drawable.finance_miscellaneous
         }
     }
 }

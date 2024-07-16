@@ -8,12 +8,11 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
@@ -23,7 +22,10 @@ import androidx.room.Room
 import com.example.coinlog.data.FinanceDatabase
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.presentation.AddScreen
-import com.example.coinlog.presentation.HomePage
+import com.example.coinlog.presentation.CategoriesPage
+import com.example.coinlog.presentation.Main
+import com.example.coinlog.presentation.TransactionDescription
+import com.example.coinlog.ui.theme.CoinLogTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -49,28 +51,36 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val data by financeViewmodel.currentSummary.collectAsState()
-            val navController = rememberNavController()
-            Scaffold { innerPadding ->
-                Box(
-                    modifier = Modifier
-                        .background(Color(0xFF1D1D1D))
-                        .fillMaxSize()
-                ) {
-                    NavHost(navController = navController, startDestination = "home_screen") {
-                        composable("home_screen") {
-                            HomePage(
-                                modifier = Modifier.padding(innerPadding),
-                                viewmodel = financeViewmodel,
-                                navController = navController
-                            )
-                        }
-                        composable("add_screen") {
-                            AddScreen(
-                                paddingValues = innerPadding,
-                                viewmodel = financeViewmodel,
-                                navController = navController
-                            )
+            CoinLogTheme {
+                val data by financeViewmodel.currentSummary.collectAsState()
+                val navController = rememberNavController()
+                Scaffold { innerPadding ->
+                    Box(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.background)
+                            .fillMaxSize()
+                    ) {
+                        NavHost(navController = navController, startDestination = "home_screen") {
+                            composable("home_screen") {
+                                Main(
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
+                            }
+                            composable("add_screen") {
+                                AddScreen(
+                                    paddingValues = innerPadding,
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
+                            }
+                            composable("categories_page") {
+                                CategoriesPage()
+                            }
+                            composable("transaction_description/{id}") {
+                                val id = it.arguments?.getString("id")?.toInt() ?: 3
+                                TransactionDescription(id = id, viewmodel = financeViewmodel, navController = navController)
+                            }
                         }
                     }
                 }

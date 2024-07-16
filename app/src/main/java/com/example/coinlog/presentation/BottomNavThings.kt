@@ -3,19 +3,19 @@ package com.example.coinlog.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +28,11 @@ import androidx.compose.ui.unit.sp
 import com.example.coinlog.data.FinanceViewmodel
 
 @Composable
-fun BottomMenu(modifier: Modifier = Modifier, items: List<BottomMenuContent>, viewmodel: FinanceViewmodel) {
+fun BottomMenu(
+    modifier: Modifier = Modifier,
+    items: List<BottomMenuContent>,
+    viewmodel: FinanceViewmodel
+) {
 
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
@@ -38,7 +42,7 @@ fun BottomMenu(modifier: Modifier = Modifier, items: List<BottomMenuContent>, vi
             .padding(bottom = 18.dp)
             .clip(RoundedCornerShape(36.dp))
             .background(Color.DarkGray)
-            .padding(9.dp)
+            .padding(top = 9.dp)
             .fillMaxWidth()
 
     ) {
@@ -62,15 +66,25 @@ fun BottomMenuItem(
     inactiveTextColor: Color = Color.LightGray,
     onItemClick: () -> Unit
 ) {
-    Box(modifier = Modifier.clickable { onItemClick() }, contentAlignment = Alignment.Center) {
-        Column {
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+    Box(
+        modifier = Modifier.clickable(
+            interactionSource = interactionSource,
+            indication = null
+        ) { onItemClick() }, contentAlignment = Alignment.Center
+    ) {
+        Column(modifier = Modifier) {
             Icon(
                 painter = painterResource(id = item.iconId),
                 contentDescription = null,
                 tint = if (isSelected) activeTextColour else inactiveTextColor,
-                modifier = Modifier.size(item.iconSize).align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .size(item.iconSize)
+                    .align(Alignment.CenterHorizontally)
             )
-            Spacer(modifier = Modifier.height(3.dp))
+//            Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = item.title,
                 color = if (isSelected) activeTextColour else inactiveTextColor,
@@ -83,7 +97,7 @@ fun BottomMenuItem(
 }
 
 data class BottomMenuContent(
-    val title: String, val iconId: Int, val iconSize:Dp = 24.dp
+    val title: String, val iconId: Int, val iconSize: Dp = 24.dp
 )
 
 @Preview
