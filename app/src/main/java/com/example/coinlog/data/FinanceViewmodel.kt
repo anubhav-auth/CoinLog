@@ -1,5 +1,6 @@
 package com.example.coinlog.data
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,12 +18,15 @@ class FinanceViewmodel(
 ) : ViewModel() {
 
     var selectedItemIndexInEx by mutableIntStateOf(1)
-    var selectedItemIndex by mutableIntStateOf(0)
+    var selectedBottomItemIndex by mutableIntStateOf(0)
     var selectedCategory by mutableStateOf(Category.Miscellaneous)
 
     private val tag = "mytag"
     private val _allExpenses = MutableStateFlow<List<Expenses>>(emptyList())
     val allExpenses = _allExpenses.asStateFlow()
+
+    private val _allExpensesByCat = MutableStateFlow<List<Expenses>>(emptyList())
+    val allExpensesByCat = _allExpensesByCat.asStateFlow()
 
     private val _currentSummary = MutableStateFlow<Summary>(Summary())
     val currentSummary = _currentSummary.asStateFlow()
@@ -67,6 +71,31 @@ class FinanceViewmodel(
         loadAllExpenses()
     }
 
+    fun updateExpense(oldExpense: Expenses, expenses: Expenses) {
+        viewModelScope.launch {
+            val currentSummary = summaryDao.getSummary() ?: Summary()
+
+            var inc = currentSummary.income
+
+            var exp = currentSummary.expenditure
+
+
+            if (expenses.credit) inc -= oldExpense.amount
+            else exp -= oldExpense.amount
+            val newSummary = currentSummary.copy(
+                income = inc, expenditure = exp, balance = inc - exp
+            )
+
+            _currentSummary.update {
+                newSummary
+            }
+            Log.d(tag, expenses.toString())
+            summaryDao.upsertSummary(newSummary)
+
+            saveExpense(expenses)
+        }
+    }
+
     fun deleteExpense(expenses: Expenses) {
         viewModelScope.launch {
             expenseDao.deleteExpense(expenses)
@@ -85,14 +114,12 @@ class FinanceViewmodel(
             else exp += amt
 
             val newSummary = currentSummary.copy(
-                income = inc,
-                expenditure = exp,
-                balance = inc - exp
+                income = inc, expenditure = exp, balance = inc - exp
             )
             _currentSummary.update {
                 newSummary
             }
-            summaryDao.upsertExpense(newSummary)
+            summaryDao.upsertSummary(newSummary)
         }
     }
 
@@ -109,14 +136,22 @@ class FinanceViewmodel(
             }
 
             val newSummary = currentSummary.copy(
-                income = inc,
-                expenditure = exp,
-                balance = inc - exp
+                income = inc, expenditure = exp, balance = inc - exp
             )
             _currentSummary.update {
                 newSummary
             }
-            summaryDao.upsertExpense(newSummary)
+            summaryDao.upsertSummary(newSummary)
+        }
+    }
+
+    fun getExpensesByCategory(category: Category){
+        viewModelScope.launch {
+            expenseDao.getExpensesByCategory(category).collectLatest {result->
+                _allExpensesByCat.update {
+                    result
+                }
+            }
         }
     }
 }

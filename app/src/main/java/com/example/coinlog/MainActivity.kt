@@ -21,10 +21,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.coinlog.data.FinanceDatabase
 import com.example.coinlog.data.FinanceViewmodel
-import com.example.coinlog.presentation.AddScreen
-import com.example.coinlog.presentation.CategoriesPage
+import com.example.coinlog.presentation.supplementScreens.AddScreen
+import com.example.coinlog.presentation.supplementScreens.CategoriesPage
+import com.example.coinlog.presentation.supplementScreens.EditData
+import com.example.coinlog.presentation.supplementScreens.FilterByCategoryPage
 import com.example.coinlog.presentation.Main
-import com.example.coinlog.presentation.TransactionDescription
+import com.example.coinlog.presentation.supplementScreens.AllExpenses
+import com.example.coinlog.presentation.supplementScreens.TransactionDescription
 import com.example.coinlog.ui.theme.CoinLogTheme
 
 
@@ -75,11 +78,28 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable("categories_page") {
-                                CategoriesPage()
+                                CategoriesPage(navController = navController)
+                            }
+                            composable("all_expenses_screen"){
+                                AllExpenses(viewmodel = financeViewmodel, navController = navController)
                             }
                             composable("transaction_description/{id}") {
                                 val id = it.arguments?.getString("id")?.toInt() ?: 3
-                                TransactionDescription(id = id, viewmodel = financeViewmodel, navController = navController)
+                                TransactionDescription(
+                                    id = id,
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
+                            }
+                            composable("edit_transaction") {
+                                EditData(
+                                    navController = navController,
+                                    viewmodel = financeViewmodel
+                                )
+                            }
+                            composable("filter_by_category_page/{index}"){
+                                val index = it.arguments?.getString("index")?.toInt() ?: 0
+                                FilterByCategoryPage(id = index, viewmodel = financeViewmodel, navController = navController)
                             }
                         }
                     }

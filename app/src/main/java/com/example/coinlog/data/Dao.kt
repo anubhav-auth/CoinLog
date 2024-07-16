@@ -20,14 +20,25 @@ interface ExpenseDao {
 
     @Query("SELECT * FROM EXPENSES WHERE id = :expenseId")
     suspend fun getExpenseById(expenseId: Int): Expenses
+
+    @Query("SELECT * FROM EXPENSES WHERE category = :category ORDER BY dateAdded DESC")
+    fun getExpensesByCategory(category: Category):Flow<List<Expenses>>
 }
 
 @Dao
 interface SummaryDao {
 
     @Upsert
-    suspend fun upsertExpense(summary: Summary)
+    suspend fun upsertSummary(summary: Summary)
 
     @Query("SELECT * FROM SUMMARY WHERE id = 1")
     suspend fun getSummary(): Summary?
+
+    @Query("SELECT * FROM SUMMARY WHERE id = :id")
+    suspend fun getSummaryById(id: Int): Summary?
+}
+
+@Dao
+interface PotDao{
+
 }
