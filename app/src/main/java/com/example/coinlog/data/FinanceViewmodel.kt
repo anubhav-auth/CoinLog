@@ -17,7 +17,7 @@ class FinanceViewmodel(
     private val expenseDao: ExpenseDao, private val summaryDao: SummaryDao
 ) : ViewModel() {
 
-    var selectedItemIndexInEx by mutableIntStateOf(1)
+    var selectedItemIndNexInEx by mutableIntStateOf(1)
     var selectedBottomItemIndex by mutableIntStateOf(0)
     var selectedCategory by mutableStateOf(Category.Miscellaneous)
 

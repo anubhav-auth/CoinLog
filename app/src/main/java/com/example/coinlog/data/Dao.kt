@@ -37,8 +37,3 @@ interface SummaryDao {
     @Query("SELECT * FROM SUMMARY WHERE id = :id")
     suspend fun getSummaryById(id: Int): Summary?
 }
-
-@Dao
-interface PotDao{
-
-}
