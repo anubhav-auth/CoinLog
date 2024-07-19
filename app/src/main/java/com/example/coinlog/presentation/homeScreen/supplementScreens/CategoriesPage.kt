@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation.supplementScreens
+package com.example.coinlog.presentation.homeScreen.supplementScreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.HelperObj
-import com.example.coinlog.presentation.mainScreens.CategoriesContent
+import com.example.coinlog.presentation.homeScreen.CategoriesContent
 
 @Composable
 fun CategoriesPage(navController: NavController) {

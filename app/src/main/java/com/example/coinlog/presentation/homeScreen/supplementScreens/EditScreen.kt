@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation.supplementScreens
+package com.example.coinlog.presentation.homeScreen.supplementScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -6,31 +6,30 @@ import androidx.room.PrimaryKey
 @Entity
 data class Expenses(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val title: String,
     val description: String,
     val category: Category,
     val credit: Boolean,
     val amount: Double,
-    val dateAdded: Long
+    val dateAdded: Long,
+    val potId: Long? = null
 )
 
 @Entity
-data class Pots(
+data class Pot(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val title: String,
-    val description: String,
-    val reason: String,
-    val amount: Double,
-//    val transaction: List<Expenses>,
+    val id: Long = 0,
+    val title: String = "Savings",
+    val amount: Double = 0.00,
+    val category: Category = Category.Miscellaneous,
     val dateAdded: Long
 )
 
 @Entity
 data class Summary(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
     val balance: Double = 0.00,
     val expenditure: Double = 0.00,
     val income: Double = 0.00

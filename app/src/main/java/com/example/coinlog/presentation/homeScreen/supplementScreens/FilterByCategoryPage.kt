@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation.supplementScreens
+package com.example.coinlog.presentation.homeScreen.supplementScreens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.FinanceViewmodel
-import com.example.coinlog.presentation.mainScreens.TransactionMenu
+import com.example.coinlog.presentation.homeScreen.TransactionMenu
 
 
 @Composable

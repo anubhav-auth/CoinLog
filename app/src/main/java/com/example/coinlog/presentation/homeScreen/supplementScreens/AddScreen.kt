@@ -1,5 +1,6 @@
-package com.example.coinlog.presentation.supplementScreens
+package com.example.coinlog.presentation.homeScreen.supplementScreens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -61,7 +62,7 @@ import com.example.coinlog.data.Category
 import com.example.coinlog.data.Expenses
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
-import com.example.coinlog.presentation.mainScreens.CategoriesContent
+import com.example.coinlog.presentation.homeScreen.CategoriesContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

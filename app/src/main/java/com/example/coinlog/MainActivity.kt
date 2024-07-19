@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -21,13 +19,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.coinlog.data.FinanceDatabase
 import com.example.coinlog.data.FinanceViewmodel
-import com.example.coinlog.presentation.supplementScreens.AddScreen
-import com.example.coinlog.presentation.supplementScreens.CategoriesPage
-import com.example.coinlog.presentation.supplementScreens.EditData
-import com.example.coinlog.presentation.supplementScreens.FilterByCategoryPage
 import com.example.coinlog.presentation.Main
-import com.example.coinlog.presentation.supplementScreens.AllExpenses
-import com.example.coinlog.presentation.supplementScreens.TransactionDescription
+import com.example.coinlog.presentation.homeScreen.supplementScreens.AddScreen
+import com.example.coinlog.presentation.homeScreen.supplementScreens.AllExpenses
+import com.example.coinlog.presentation.homeScreen.supplementScreens.CategoriesPage
+import com.example.coinlog.presentation.homeScreen.supplementScreens.EditData
+import com.example.coinlog.presentation.homeScreen.supplementScreens.FilterByCategoryPage
+import com.example.coinlog.presentation.homeScreen.supplementScreens.TransactionDescription
+import com.example.coinlog.presentation.pot.supplementScreens.AddWithdrawMoneyToPot
+import com.example.coinlog.presentation.pot.supplementScreens.PotAddScreen
+import com.example.coinlog.presentation.pot.supplementScreens.PotDetailScreen
 import com.example.coinlog.ui.theme.CoinLogTheme
 
 
@@ -45,7 +46,11 @@ class MainActivity : ComponentActivity() {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return FinanceViewmodel(database.expensesDao(), database.summaryDao()) as T
+                return FinanceViewmodel(
+                    database.expensesDao(),
+                    database.summaryDao(),
+                    database.potDao()
+                ) as T
             }
         }
     })
@@ -55,7 +60,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CoinLogTheme {
-                val data by financeViewmodel.currentSummary.collectAsState()
                 val navController = rememberNavController()
                 Scaffold { innerPadding ->
                     Box(
@@ -80,8 +84,11 @@ class MainActivity : ComponentActivity() {
                             composable("categories_page") {
                                 CategoriesPage(navController = navController)
                             }
-                            composable("all_expenses_screen"){
-                                AllExpenses(viewmodel = financeViewmodel, navController = navController)
+                            composable("all_expenses_screen") {
+                                AllExpenses(
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
                             }
                             composable("transaction_description/{id}") {
                                 val id = it.arguments?.getString("id")?.toInt() ?: 3
@@ -97,9 +104,38 @@ class MainActivity : ComponentActivity() {
                                     viewmodel = financeViewmodel
                                 )
                             }
-                            composable("filter_by_category_page/{index}"){
+                            composable("filter_by_category_page/{index}") {
                                 val index = it.arguments?.getString("index")?.toInt() ?: 0
-                                FilterByCategoryPage(id = index, viewmodel = financeViewmodel, navController = navController)
+                                FilterByCategoryPage(
+                                    id = index,
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
+                            }
+                            composable("pot_details/{id}") {
+                                val id = it.arguments?.getString("id")?.toLong() ?: 0
+                                PotDetailScreen(
+                                    viewmodel = financeViewmodel,
+                                    navController = navController,
+                                    potId = id
+                                )
+                            }
+                            composable("new_pot_add") {
+                                PotAddScreen(
+                                    viewmodel = financeViewmodel,
+                                    navController = navController
+                                )
+                            }
+                            composable("add_withdraw_page/{add}/{id}") {
+                                val add = it.arguments?.getString("add").toBoolean()
+                                val id = it.arguments?.getString("id")?.toLong()?:0
+                                AddWithdrawMoneyToPot(
+                                    paddingValues = innerPadding,
+                                    viewmodel = financeViewmodel,
+                                    navController = navController,
+                                    add = add,
+                                    potId = id
+                                )
                             }
                         }
                     }

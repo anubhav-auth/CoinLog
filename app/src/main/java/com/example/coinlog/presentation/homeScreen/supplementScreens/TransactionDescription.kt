@@ -1,5 +1,6 @@
-package com.example.coinlog.presentation.supplementScreens
+package com.example.coinlog.presentation.homeScreen.supplementScreens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -56,8 +57,8 @@ import com.example.coinlog.R
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
-import com.example.coinlog.presentation.mainScreens.CategoriesContent
-import com.example.coinlog.presentation.mainScreens.toMoneyFormat
+import com.example.coinlog.presentation.homeScreen.CategoriesContent
+import com.example.coinlog.presentation.homeScreen.toMoneyFormat
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
@@ -73,7 +74,6 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
             initialValue = SheetValue.Hidden, skipHiddenState = false
         )
     )
-
     expense?.let {
 
         viewmodel.selectedCategory = it.category
@@ -251,6 +251,7 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
                     ) {
                         Button(
                             modifier = Modifier.width(50.dp),
+                            enabled = it.potId == null,
                             onClick = {
                                 navController.navigateUp()
                                 Toast.makeText(
@@ -267,6 +268,7 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
 
                         Button(
                             modifier = Modifier.width(50.dp),
+                            enabled = it.potId == null,
                             onClick = {
                                 navController.navigate("edit_transaction")
                             },

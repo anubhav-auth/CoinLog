@@ -1,4 +1,4 @@
-package com.example.coinlog.presentation.mainScreens
+package com.example.coinlog.presentation.analytics
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +8,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun ProfileScreen() {
+fun AnalyticsScreen() {
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = "profile")
+        Text(text = "analysis")
     }
+
 }

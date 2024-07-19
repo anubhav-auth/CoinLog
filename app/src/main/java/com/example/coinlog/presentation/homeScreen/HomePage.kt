@@ -1,5 +1,6 @@
-package com.example.coinlog.presentation.mainScreens
+package com.example.coinlog.presentation.homeScreen
 
+import android.annotation.SuppressLint
 import android.icu.text.DecimalFormat
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,9 +25,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -44,6 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.room.Transaction
 import com.example.coinlog.R
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.Expenses
@@ -58,9 +63,9 @@ fun Double.toMoneyFormat(): String {
     return formatter.format(this)
 }
 
-
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Display(
+fun DisplayHome(
     viewmodel: FinanceViewmodel,
     modifier: Modifier = Modifier,
     navController: NavController
@@ -68,101 +73,120 @@ fun Display(
     val imageHeader = R.drawable.ic_launcher_background
     val name = "default"
     val allExpenses by viewmodel.allExpenses.collectAsState()
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp, vertical = 12.dp)
-    ) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("add_screen")
+                },
+                modifier = Modifier.padding(bottom = 75.dp),
+                containerColor = Color(0xFFD6FF65)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+        }
+    ) { _ ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            Image(
-                painter = painterResource(id = imageHeader),
-                contentDescription = "",
-                modifier = Modifier
-                    .clip(
-                        CircleShape
-                    )
-                    .size(42.dp)
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Image(
+                    painter = painterResource(id = imageHeader),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .clip(
+                            CircleShape
+                        )
+                        .size(42.dp)
+                )
+                Spacer(modifier = Modifier.width(21.dp))
+                Text(
+                    text = "Hi $name",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Image(
+                    painter = painterResource(id = imageHeader),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .clip(
+                            CircleShape
+                        )
+                        .size(42.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(21.dp))
+            BalanceCard(viewmodel = viewmodel)
+            Spacer(modifier = Modifier.height(21.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Categories",
+                    fontSize = 21.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = "See all",
+                    color = Color.Gray,
+                    modifier = Modifier.clickable { navController.navigate("categories_page") },
+                    textDecoration = TextDecoration.Underline
+                )
+            }
+            Spacer(modifier = Modifier.height(21.dp))
+            CategoriesMenu(
+                items = listOf(
+                    CategoriesContent(Category.Miscellaneous),
+                    CategoriesContent(Category.FoodAndDrinks),
+                    CategoriesContent(Category.PersonalCare),
+                    CategoriesContent(Category.BillsAndUtilities),
+                    CategoriesContent(Category.Commute),
+                    CategoriesContent(Category.Travel)
+                ),
+                navController = navController
             )
-            Spacer(modifier = Modifier.width(21.dp))
-            Text(
-                text = "Hi $name",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Image(
-                painter = painterResource(id = imageHeader),
-                contentDescription = "",
-                modifier = Modifier
-                    .clip(
-                        CircleShape
-                    )
-                    .size(42.dp)
+            Spacer(modifier = Modifier.height(21.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Recent Expenses",
+                    fontSize = 21.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Text(
+                    text = "See all",
+                    color = Color.Gray,
+                    modifier = Modifier.clickable { navController.navigate("all_expenses_screen") },
+                    textDecoration = TextDecoration.Underline
+                )
+            }
+            Spacer(modifier = Modifier.height(21.dp))
+            TransactionMenu(
+                items = allExpenses,
+                navController = navController,
+                limitNoOfElements = true
             )
         }
-        Spacer(modifier = Modifier.height(21.dp))
-        BalanceCard(viewmodel = viewmodel)
-        Spacer(modifier = Modifier.height(21.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Categories",
-                fontSize = 21.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = "See all",
-                color = Color.Gray,
-                modifier = Modifier.clickable { navController.navigate("categories_page") },
-                textDecoration = TextDecoration.Underline
-            )
-        }
-        Spacer(modifier = Modifier.height(21.dp))
-        CategoriesMenu(
-            items = listOf(
-                CategoriesContent(Category.Miscellaneous),
-                CategoriesContent(Category.FoodAndDrinks),
-                CategoriesContent(Category.PersonalCare),
-                CategoriesContent(Category.BillsAndUtilities),
-                CategoriesContent(Category.Commute),
-                CategoriesContent(Category.Travel)
-            ),
-            navController = navController
-        )
-        Spacer(modifier = Modifier.height(21.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Recent Expenses",
-                fontSize = 21.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = "See all",
-                color = Color.Gray,
-                modifier = Modifier.clickable { navController.navigate("all_expenses_screen") },
-                textDecoration = TextDecoration.Underline
-            )
-        }
-        Spacer(modifier = Modifier.height(21.dp))
-        TransactionMenu(
-            items = allExpenses,
-            navController = navController,
-            limitNoOfElements = true
-        )
     }
 }
 
@@ -339,7 +363,8 @@ fun groupExpensesByDate(expenses: List<Expenses>): Map<String, List<Expenses>> {
 fun TransactionMenu(
     items: List<Expenses>,
     navController: NavController,
-    limitNoOfElements: Boolean = false
+    limitNoOfElements: Boolean = false,
+    isMainTransaction: Boolean = true
 ) {
     var groupedExpenses = emptyMap<String, List<Expenses>>()
 
@@ -361,7 +386,7 @@ fun TransactionMenu(
                 )
             }
             items(expensesOnDate) { item ->
-                TransactionItem(item = item, navController = navController)
+                TransactionItem(item = item, navController = navController, isMainTransaction)
             }
         }
 
@@ -370,7 +395,7 @@ fun TransactionMenu(
 }
 
 @Composable
-fun TransactionItem(item: Expenses, navController: NavController) {
+fun TransactionItem(item: Expenses, navController: NavController, isMainTransaction: Boolean) {
     Row(
         modifier = Modifier
             .padding(bottom = 6.dp)
@@ -427,10 +452,14 @@ fun TransactionItem(item: Expenses, navController: NavController) {
         val timeFormat = SimpleDateFormat("hh:mm a")
         val date = Date(item.dateAdded)
 
+        var bool = item.credit
+
+        if (!isMainTransaction) bool = !bool
+
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = if (item.credit) "+ ${item.amount.toMoneyFormat()}" else "- ${item.amount.toMoneyFormat()}",
-                color = if (item.credit) Color(0xFF228C22) else Color.Red
+                text = if (bool) "+ ${item.amount.toMoneyFormat()}" else "- ${item.amount.toMoneyFormat()}",
+                color = if (bool) Color(0xFF228C22) else Color.Red
             )
             Text(
                 text = timeFormat.format(date),
