@@ -39,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,15 +71,14 @@ fun AddWithdrawMoneyToPot(
     viewmodel: FinanceViewmodel,
     navController: NavController,
     add: Boolean,
-    potId: Long
+    potId: Long,
+    scope: CoroutineScope
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Hidden, skipHiddenState = false
         )
     )
-    val scope = rememberCoroutineScope()
-
     BottomSheetScaffold(
         scaffoldState = scaffoldState, sheetContent = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -93,8 +91,10 @@ fun AddWithdrawMoneyToPot(
 
                 Spacer(modifier = Modifier.size(30.dp))
                 LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                    val a = Category.entries.toTypedArray()
-                    items(a) {
+                    val categories = Category.entries.toTypedArray()
+                    val categoriesToSkip = listOf(Category.Pot, Category.Warning)
+                    val filteredCategory = categories.filter { it !in categoriesToSkip }
+                    items(filteredCategory) {
                         CategoriesSheetItem(item = CategoriesContent(it), viewmodel = viewmodel)
                     }
                 }
@@ -391,7 +391,6 @@ fun CategoriesSheetItem(item: CategoriesContent, viewmodel: FinanceViewmodel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier
-
             .clickable {
                 viewmodel.selectedCategory = item.category
             }

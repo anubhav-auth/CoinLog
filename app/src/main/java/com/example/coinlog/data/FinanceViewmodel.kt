@@ -13,15 +13,27 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
 class FinanceViewmodel(
-    private val expenseDao: ExpenseDao, private val summaryDao: SummaryDao, private val potDao: PotDao
+    private val expenseDao: ExpenseDao,
+    private val summaryDao: SummaryDao,
+    private val potDao: PotDao
 ) : ViewModel() {
 
     var selectedItemIndexInEx by mutableIntStateOf(1)
     var selectedBottomItemIndex by mutableIntStateOf(0)
     var selectedCategory by mutableStateOf(Category.Miscellaneous)
+    var selectedFilter by mutableStateOf(TransactionFilter.DAY)
 
     private val tag = "mytag"
+
+    private val _incomeExpensesData = MutableStateFlow<Pair<List<ChartData>, List<ChartData>>>(
+        Pair(
+            emptyList(), emptyList()
+        )
+    )
+    val incomeExpensesData = _incomeExpensesData.asStateFlow()
+
     private val _allExpenses = MutableStateFlow<List<Expenses>>(emptyList())
     val allExpenses = _allExpenses.asStateFlow()
 
@@ -48,6 +60,23 @@ class FinanceViewmodel(
         viewModelScope.launch {
             _currentSummary.update {
                 summaryDao.getSummary() ?: Summary()
+            }
+        }
+    }
+
+    fun getIncomeExpenseData() {
+        viewModelScope.launch {
+            val incomeData = mutableListOf<ChartData>()
+            val expenditureData = mutableListOf<ChartData>()
+
+            expenseDao.getAllExpenses().collectLatest { expense ->
+                expense.forEach {
+                    if (it.credit) incomeData.add(ChartData(it.amount, it.dateAdded))
+                    else expenditureData.add(ChartData(it.amount, it.dateAdded))
+                }
+                _incomeExpensesData.update {
+                    Pair(incomeData, expenditureData)
+                }
             }
         }
     }
@@ -131,7 +160,7 @@ class FinanceViewmodel(
         }
     }
 
-    private fun updateSummaryOnDelete(amt:Double, credit: Boolean) {
+    private fun updateSummaryOnDelete(amt: Double, credit: Boolean) {
         viewModelScope.launch {
             val currentSummary = summaryDao.getSummary() ?: Summary()
             var inc = currentSummary.income
@@ -153,9 +182,9 @@ class FinanceViewmodel(
         }
     }
 
-    fun getExpensesByCategory(category: Category){
+    fun getExpensesByCategory(category: Category) {
         viewModelScope.launch {
-            expenseDao.getExpensesByCategory(category).collectLatest {result->
+            expenseDao.getExpensesByCategory(category).collectLatest { result ->
                 _allExpensesByCat.update {
                     result
                 }
@@ -163,20 +192,21 @@ class FinanceViewmodel(
         }
     }
 
-    fun loadAllPots(){
+    fun loadAllPots() {
         viewModelScope.launch {
-            potDao.getAlLPots().collectLatest { result->
+            potDao.getAlLPots().collectLatest { result ->
                 _allPots.update {
                     result
                 }
             }
         }
     }
-    fun savePot(pot:Pot){
+
+    fun savePot(pot: Pot) {
         val newExpense = Expenses(
             title = pot.title,
             description = "Pot Created",
-            category = Category.Miscellaneous,
+            category = Category.Pot,
             credit = false,
             amount = pot.amount,
             dateAdded = pot.dateAdded
@@ -189,22 +219,22 @@ class FinanceViewmodel(
 
     }
 
-    fun updatePot(pot:Pot){
+    fun updatePot(pot: Pot) {
         viewModelScope.launch {
             potDao.upsertPot(pot)
         }
     }
 
-    fun deletePot(pot: Pot){
+    fun deletePot(pot: Pot) {
         viewModelScope.launch {
             potDao.deletePot(pot)
         }
         loadAllPots()
     }
 
-    fun loadAllPotExpenses(potId: Long){
+    fun loadAllPotExpenses(potId: Long) {
         viewModelScope.launch {
-            expenseDao.getPotExpensesById(potId = potId).collectLatest {result->
+            expenseDao.getPotExpensesById(potId = potId).collectLatest { result ->
                 _allPotExpenses.update {
                     result
                 }
@@ -212,7 +242,7 @@ class FinanceViewmodel(
         }
     }
 
-    fun getPotById(potId: Long){
+    fun getPotById(potId: Long) {
         viewModelScope.launch {
             val pot = potDao.getPotByID(potId)
             _potById.update {

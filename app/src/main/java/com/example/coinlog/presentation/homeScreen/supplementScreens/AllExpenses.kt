@@ -1,10 +1,12 @@
 package com.example.coinlog.presentation.homeScreen.supplementScreens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,8 +25,10 @@ import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.presentation.homeScreen.TransactionMenu
 
 @Composable
-fun AllExpenses(viewmodel: FinanceViewmodel, navController: NavController) {
-    val expenses by viewmodel.allExpenses.collectAsState()
+fun AllExpenses(viewmodel: FinanceViewmodel, navController: NavController, isPot: Boolean) {
+    val expenses by if (!isPot) viewmodel.allExpenses.collectAsState() else viewmodel.allPotExpenses.collectAsState()
+
+
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -40,11 +45,23 @@ fun AllExpenses(viewmodel: FinanceViewmodel, navController: NavController) {
                 fontFamily = FontFamily.Monospace
             )
             Spacer(modifier = Modifier.height(24.dp))
+            FilterButton(viewmodel = viewmodel)
+            Spacer(modifier = Modifier.height(24.dp))
             TransactionMenu(
                 items = expenses,
-                navController = navController
+                navController = navController,
+                groupBy = viewmodel.selectedFilter,
+                isMainTransaction = !isPot,
+                insidePotScreen = isPot
             )
 
         }
+    }
+}
+
+@Composable
+fun FilterButton(viewmodel: FinanceViewmodel) {
+    Row(modifier = Modifier.clip(RoundedCornerShape(15.dp))) {
+
     }
 }

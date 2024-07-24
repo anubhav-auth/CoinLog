@@ -39,6 +39,7 @@ enum class Category(private val displayName: String) {
     Miscellaneous("Miscellaneous"),
     FoodAndDrinks("Food & Drinks"),
     Groceries("Groceries"),
+    Salary("Salary"),
     Shopping("Shopping"),
     Entertainment("Entertainment"),
     Fuel("Fuel"),
@@ -60,10 +61,27 @@ enum class Category(private val displayName: String) {
     FeesAndCharges("Fees & Charges"),
     Atm("ATM"),
     Charity("Charity"),
-    MoneyTransfer("Money Transfer");
+    MoneyTransfer("Money Transfer"),
+    Pot("Pot"),
+    Warning("Warning");
 
 
     override fun toString(): String {
         return displayName
     }
 }
+
+enum class TransactionFilter(private val displayName: String) {
+    DAY("DAY"),
+    MONTH("MONTH"),
+    YEAR("YEAR");
+
+    override fun toString(): String {
+        return displayName
+    }
+}
+
+data class ChartData(
+    val income: Double,
+    val dateAdded: Long
+)

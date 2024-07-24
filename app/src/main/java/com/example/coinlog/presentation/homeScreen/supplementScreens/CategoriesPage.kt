@@ -30,15 +30,17 @@ import com.example.coinlog.presentation.homeScreen.CategoriesContent
 
 @Composable
 fun CategoriesPage(navController: NavController) {
-    Scaffold {
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
-                .padding(it)
+                .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            val a = Category.entries.toTypedArray()
+            val categories = Category.entries.toTypedArray()
+            val categoriesToSkip = listOf(Category.Pot, Category.Warning)
+            val filteredCategory = categories.filter { it !in categoriesToSkip }
             LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                items(a) { item ->
+                items(filteredCategory) { item ->
                     CategoriesPageItem(
                         item = CategoriesContent(item),
                         navController = navController

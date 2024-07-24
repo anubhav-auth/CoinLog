@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +20,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
+import com.example.coinlog.auth.AuthState
+import com.example.coinlog.auth.AuthViewModel
+import com.example.coinlog.auth.LoginPage
+import com.example.coinlog.auth.SignUpPage
 import com.example.coinlog.data.FinanceDatabase
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.presentation.Main
@@ -58,8 +65,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val authViewModel: AuthViewModel by viewModels()
+
+
+
         setContent {
             CoinLogTheme {
+                val authState by authViewModel.authState.collectAsState()
+
+                val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
                 Scaffold { innerPadding ->
                     Box(
@@ -67,10 +81,25 @@ class MainActivity : ComponentActivity() {
                             .background(MaterialTheme.colorScheme.background)
                             .fillMaxSize()
                     ) {
-                        NavHost(navController = navController, startDestination = "home_screen") {
+                        NavHost(
+                            navController = navController,
+                            startDestination = when (authState) {
+                                AuthState.Authenticated -> "home_screen"
+                                else -> "login_page"
+                            }
+                        ) {
+                            composable("login_page") {
+                                LoginPage(viewModel = authViewModel,
+                                    navController = navController,
+                                    scope = scope)
+                            }
+                            composable("signup_page") {
+                                SignUpPage(viewModel = authViewModel, navController = navController)
+                            }
                             composable("home_screen") {
                                 Main(
-                                    viewmodel = financeViewmodel,
+                                    financeViewmodel = financeViewmodel,
+                                    authViewModel = authViewModel,
                                     navController = navController
                                 )
                             }
@@ -78,16 +107,19 @@ class MainActivity : ComponentActivity() {
                                 AddScreen(
                                     paddingValues = innerPadding,
                                     viewmodel = financeViewmodel,
-                                    navController = navController
+                                    navController = navController,
+                                    scope = scope
                                 )
                             }
                             composable("categories_page") {
                                 CategoriesPage(navController = navController)
                             }
-                            composable("all_expenses_screen") {
+                            composable("all_expenses_screen/{isPot}") {
+                                val isPot = it.arguments?.getString("isPot").toBoolean()
                                 AllExpenses(
                                     viewmodel = financeViewmodel,
-                                    navController = navController
+                                    navController = navController,
+                                    isPot
                                 )
                             }
                             composable("transaction_description/{id}") {
@@ -95,7 +127,8 @@ class MainActivity : ComponentActivity() {
                                 TransactionDescription(
                                     id = id,
                                     viewmodel = financeViewmodel,
-                                    navController = navController
+                                    navController = navController,
+                                    scope = scope
                                 )
                             }
                             composable("edit_transaction") {
@@ -117,7 +150,8 @@ class MainActivity : ComponentActivity() {
                                 PotDetailScreen(
                                     viewmodel = financeViewmodel,
                                     navController = navController,
-                                    potId = id
+                                    potId = id,
+                                    scope = scope
                                 )
                             }
                             composable("new_pot_add") {
@@ -128,13 +162,14 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("add_withdraw_page/{add}/{id}") {
                                 val add = it.arguments?.getString("add").toBoolean()
-                                val id = it.arguments?.getString("id")?.toLong()?:0
+                                val id = it.arguments?.getString("id")?.toLong() ?: 0
                                 AddWithdrawMoneyToPot(
                                     paddingValues = innerPadding,
                                     viewmodel = financeViewmodel,
                                     navController = navController,
                                     add = add,
-                                    potId = id
+                                    potId = id,
+                                    scope = scope
                                 )
                             }
                         }

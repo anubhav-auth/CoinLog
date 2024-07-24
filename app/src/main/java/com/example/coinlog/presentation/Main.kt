@@ -11,18 +11,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.coinlog.R
+import com.example.coinlog.auth.AuthViewModel
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.presentation.analytics.AnalyticsScreen
 import com.example.coinlog.presentation.homeScreen.DisplayHome
 import com.example.coinlog.presentation.pot.PotsScreen
-import com.example.coinlog.profile.ProfileScreen
+import com.example.coinlog.presentation.profile.ProfileScreen
 
 @Composable
 fun Main(
-    viewmodel: FinanceViewmodel, navController: NavController
+    financeViewmodel: FinanceViewmodel,authViewModel: AuthViewModel, navController: NavController
 ) {
 
-    Scaffold{ paddingValue ->
+    Scaffold { paddingValue ->
         Box(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
@@ -30,11 +31,11 @@ fun Main(
                 .padding(paddingValue)
 
         ) {
-            when (viewmodel.selectedBottomItemIndex) {
-                0 -> DisplayHome(viewmodel = viewmodel, navController = navController)
-                1 -> PotsScreen(viewmodel, navController)
-                2 -> AnalyticsScreen()
-                3 -> ProfileScreen()
+            when (financeViewmodel.selectedBottomItemIndex) {
+                0 -> DisplayHome(financeViewmodel = financeViewmodel, navController = navController, authViewModel = authViewModel)
+                1 -> PotsScreen(financeViewmodel, navController)
+                2 -> AnalyticsScreen(financeViewmodel)
+                3 -> ProfileScreen(authViewModel, navController)
             }
 
             BottomMenu(
@@ -43,7 +44,7 @@ fun Main(
                     BottomMenuContent("Pots", R.drawable.finance_pots),
                     BottomMenuContent("Analytics", R.drawable.finance_anaytics),
                     BottomMenuContent("Profile", R.drawable.finance_profile),
-                ), viewmodel = viewmodel, modifier = Modifier.align(Alignment.BottomCenter)
+                ), viewmodel = financeViewmodel, modifier = Modifier.align(Alignment.BottomCenter)
             )
         }
     }

@@ -22,10 +22,10 @@ interface ExpenseDao {
     suspend fun getExpenseById(expenseId: Int): Expenses
 
     @Query("SELECT * FROM EXPENSES WHERE category = :category ORDER BY dateAdded DESC")
-    fun getExpensesByCategory(category: Category):Flow<List<Expenses>>
+    fun getExpensesByCategory(category: Category): Flow<List<Expenses>>
 
     @Query("SELECT * FROM EXPENSES WHERE potId = :potId ORDER BY dateAdded DESC")
-    fun getPotExpensesById(potId: Long) : Flow<List<Expenses>>
+    fun getPotExpensesById(potId: Long): Flow<List<Expenses>>
 }
 
 @Dao
@@ -42,16 +42,16 @@ interface SummaryDao {
 }
 
 @Dao
-interface PotDao{
+interface PotDao {
 
     @Upsert
-    suspend fun upsertPot(pot: Pot):Long
+    suspend fun upsertPot(pot: Pot): Long
 
     @Delete
     suspend fun deletePot(pot: Pot)
 
     @Query("SELECT * FROM POT ORDER BY dateAdded DESC")
-    fun getAlLPots():Flow<List<Pot>>
+    fun getAlLPots(): Flow<List<Pot>>
 
     @Query("SELECT * FROM POT WHERE id = :potId")
     suspend fun getPotByID(potId: Long): Pot

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,18 +30,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.coinlog.data.Category
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
 import com.example.coinlog.data.Pot
-import com.example.coinlog.presentation.homeScreen.TransactionMenu
 import com.example.coinlog.presentation.homeScreen.toMoneyFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -71,6 +68,7 @@ fun PotsScreen(viewmodel: FinanceViewmodel, navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(paddingValues)
+                .padding(horizontal = 12.dp)
         ) {
 
             PotDisplay(viewmodel = viewmodel, navController = navController)
@@ -120,7 +118,7 @@ fun PotCard(item: Pot, viewmodel: FinanceViewmodel, navController: NavController
                     .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 Icon(
-                    painter = painterResource(id = HelperObj.getIcon(item.category)),
+                    painter = painterResource(id = HelperObj.getIcon(Category.Pot)),
                     modifier = Modifier
                         .size(39.dp)
                         .padding(6.dp),

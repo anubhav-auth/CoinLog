@@ -1,6 +1,5 @@
 package com.example.coinlog.presentation.homeScreen.supplementScreens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +40,6 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,15 +57,20 @@ import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
 import com.example.coinlog.presentation.homeScreen.CategoriesContent
 import com.example.coinlog.presentation.homeScreen.toMoneyFormat
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: NavController) {
+fun TransactionDescription(
+    id: Int,
+    viewmodel: FinanceViewmodel,
+    navController: NavController,
+    scope: CoroutineScope
+) {
     val context = LocalContext.current
     viewmodel.getExpenseFromId(id)
-    val scope = rememberCoroutineScope()
     val expense by viewmodel.transactionDataFetched.collectAsState()
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
@@ -91,8 +94,10 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
 
                     Spacer(modifier = Modifier.size(30.dp))
                     LazyVerticalGrid(columns = GridCells.Fixed(3)) {
-                        val a = Category.entries.toTypedArray()
-                        items(a) {
+                        val categories = Category.entries.toTypedArray()
+                        val categoriesToSkip = listOf(Category.Pot, Category.Warning)
+                        val filteredCategory = categories.filter { it !in categoriesToSkip }
+                        items(filteredCategory) {
                             CategoriesSheetItem(item = CategoriesContent(it), viewmodel = viewmodel)
                         }
                     }
@@ -241,7 +246,8 @@ fun TransactionDescription(id: Int, viewmodel: FinanceViewmodel, navController: 
                         CategorySmallChoice(
                             category = it.category,
                             viewmodel = viewmodel,
-                            scaffoldState = scaffoldState
+                            scaffoldState = scaffoldState,
+                            scope = scope
                         )
                     }
                     Spacer(modifier = Modifier.size(100.dp))
@@ -310,12 +316,13 @@ fun getNextUniqueIndices(currentIndex: Int, size: Int): Pair<Int, Int> {
 fun CategorySmallChoice(
     category: Category,
     viewmodel: FinanceViewmodel,
-    scaffoldState: BottomSheetScaffoldState
+    scaffoldState: BottomSheetScaffoldState,
+    scope: CoroutineScope
 ) {
     val index = category.ordinal
     val indices = getNextUniqueIndices(index, Category.entries.size)
 
-    val scope = rememberCoroutineScope()
+
     Row {
 
         CategoriesDescItem(

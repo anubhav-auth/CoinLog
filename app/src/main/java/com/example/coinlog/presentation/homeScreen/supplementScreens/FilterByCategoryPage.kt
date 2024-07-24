@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.FinanceViewmodel
+import com.example.coinlog.data.TransactionFilter
 import com.example.coinlog.presentation.homeScreen.TransactionMenu
 
 
@@ -54,7 +55,8 @@ fun FilterByCategoryPage(id: Int, viewmodel: FinanceViewmodel, navController: Na
             if (expenses.isNotEmpty()) {
                 TransactionMenu(
                     items = expenses,
-                    navController = navController
+                    navController = navController,
+                    groupBy = TransactionFilter.MONTH
                 )
             } else {
                 Row(

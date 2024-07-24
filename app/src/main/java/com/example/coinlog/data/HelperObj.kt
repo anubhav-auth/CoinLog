@@ -30,6 +30,9 @@ object HelperObj {
             Category.Charity -> R.drawable.finance_charity
             Category.MoneyTransfer -> R.drawable.finance_mony_transfer
             Category.Miscellaneous -> R.drawable.finance_miscellaneous
+            Category.Pot -> R.drawable.finance_pot
+            Category.Salary -> R.drawable.finance_salary
+            Category.Warning -> R.drawable.finance_warning
         }
     }
 }

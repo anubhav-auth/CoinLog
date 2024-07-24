@@ -48,12 +48,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.room.Transaction
+import coil.compose.AsyncImage
 import com.example.coinlog.R
+import com.example.coinlog.auth.AuthViewModel
 import com.example.coinlog.data.Category
 import com.example.coinlog.data.Expenses
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
+import com.example.coinlog.data.TransactionFilter
 import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -66,13 +68,15 @@ fun Double.toMoneyFormat(): String {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DisplayHome(
-    viewmodel: FinanceViewmodel,
+    financeViewmodel: FinanceViewmodel,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
-    val imageHeader = R.drawable.ic_launcher_background
-    val name = "default"
-    val allExpenses by viewmodel.allExpenses.collectAsState()
+    val imageHeader = authViewModel.auth.currentUser?.photoUrl
+    val name = authViewModel.auth.currentUser?.displayName
+
+    val allExpenses by financeViewmodel.allExpenses.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -102,8 +106,8 @@ fun DisplayHome(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Image(
-                    painter = painterResource(id = imageHeader),
+                AsyncImage(
+                    model = imageHeader,
                     contentDescription = "",
                     modifier = Modifier
                         .clip(
@@ -118,8 +122,8 @@ fun DisplayHome(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                Image(
-                    painter = painterResource(id = imageHeader),
+                AsyncImage(
+                    model = imageHeader,
                     contentDescription = "",
                     modifier = Modifier
                         .clip(
@@ -129,7 +133,7 @@ fun DisplayHome(
                 )
             }
             Spacer(modifier = Modifier.height(21.dp))
-            BalanceCard(viewmodel = viewmodel)
+            BalanceCard(viewmodel = financeViewmodel)
             Spacer(modifier = Modifier.height(21.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -176,7 +180,7 @@ fun DisplayHome(
                 Text(
                     text = "See all",
                     color = Color.Gray,
-                    modifier = Modifier.clickable { navController.navigate("all_expenses_screen") },
+                    modifier = Modifier.clickable { navController.navigate("all_expenses_screen/${false}") },
                     textDecoration = TextDecoration.Underline
                 )
             }
@@ -358,20 +362,34 @@ fun groupExpensesByDate(expenses: List<Expenses>): Map<String, List<Expenses>> {
     }
 }
 
+fun groupExpensesByMonth(expenses: List<Expenses>): Map<String, List<Expenses>> {
+    val dateFormat = SimpleDateFormat("MMM, yyyy")
+    return expenses.groupBy { expense ->
+        dateFormat.format(Date(expense.dateAdded))
+    }
+}
+
 
 @Composable
 fun TransactionMenu(
     items: List<Expenses>,
     navController: NavController,
     limitNoOfElements: Boolean = false,
-    isMainTransaction: Boolean = true
+    isMainTransaction: Boolean = true,
+    groupBy: TransactionFilter = TransactionFilter.DAY,
+    insidePotScreen: Boolean = false
 ) {
-    var groupedExpenses = emptyMap<String, List<Expenses>>()
 
-    if (limitNoOfElements) {
-        groupedExpenses = groupExpensesByDate(items.take(15))
+    val groupedExpenses: Map<String, List<Expenses>> = if (groupBy == TransactionFilter.DAY) {
+        if (limitNoOfElements) {
+            groupExpensesByDate(items.take(15))
+        } else {
+            groupExpensesByDate(items)
+        }
+    } else if (groupBy == TransactionFilter.MONTH) {
+        groupExpensesByMonth(items)
     } else {
-        groupedExpenses = groupExpensesByDate(items)
+        groupExpensesByMonth(items)
     }
 
     LazyColumn(contentPadding = PaddingValues(bottom = 135.dp)) {
@@ -386,7 +404,12 @@ fun TransactionMenu(
                 )
             }
             items(expensesOnDate) { item ->
-                TransactionItem(item = item, navController = navController, isMainTransaction)
+                TransactionItem(
+                    item = item,
+                    navController = navController,
+                    isMainTransaction,
+                    insidePotScreen
+                )
             }
         }
 
@@ -395,7 +418,12 @@ fun TransactionMenu(
 }
 
 @Composable
-fun TransactionItem(item: Expenses, navController: NavController, isMainTransaction: Boolean) {
+fun TransactionItem(
+    item: Expenses,
+    navController: NavController,
+    isMainTransaction: Boolean,
+    insidePotScreen: Boolean
+) {
     Row(
         modifier = Modifier
             .padding(bottom = 6.dp)
@@ -420,7 +448,19 @@ fun TransactionItem(item: Expenses, navController: NavController, isMainTransact
                     .background(MaterialTheme.colorScheme.secondaryContainer)
             ) {
                 Icon(
-                    painter = painterResource(id = HelperObj.getIcon(item.category)),
+                    painter = painterResource(
+                        id = HelperObj.getIcon(
+                            if (!isMainTransaction && insidePotScreen) {
+                                item.category
+                            } else if (isMainTransaction && item.potId == null) {
+                                item.category
+                            } else if (isMainTransaction && !insidePotScreen) {
+                                Category.Pot
+                            } else {
+                                Category.Warning
+                            }
+                        )
+                    ),
                     modifier = Modifier
                         .size(39.dp)
                         .padding(6.dp),
