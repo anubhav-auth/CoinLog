@@ -56,6 +56,7 @@ import com.example.coinlog.data.Expenses
 import com.example.coinlog.data.FinanceViewmodel
 import com.example.coinlog.data.HelperObj
 import com.example.coinlog.data.TransactionFilter
+import com.example.coinlog.presentation.profile.firstName
 import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -117,20 +118,20 @@ fun DisplayHome(
                 )
                 Spacer(modifier = Modifier.width(21.dp))
                 Text(
-                    text = "Hi $name",
+                    text = "Hi ${name?.firstName()}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                AsyncImage(
-                    model = imageHeader,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .clip(
-                            CircleShape
-                        )
-                        .size(42.dp)
-                )
+//                AsyncImage(
+//                    model = imageHeader,
+//                    contentDescription = "",
+//                    modifier = Modifier
+//                        .clip(
+//                            CircleShape
+//                        )
+//                        .size(42.dp)
+//                )
             }
             Spacer(modifier = Modifier.height(21.dp))
             BalanceCard(viewmodel = financeViewmodel)
@@ -368,6 +369,12 @@ fun groupExpensesByMonth(expenses: List<Expenses>): Map<String, List<Expenses>> 
         dateFormat.format(Date(expense.dateAdded))
     }
 }
+fun groupExpensesByYear(expenses: List<Expenses>): Map<String, List<Expenses>> {
+    val dateFormat = SimpleDateFormat("yyyy")
+    return expenses.groupBy { expense ->
+        dateFormat.format(Date(expense.dateAdded))
+    }
+}
 
 
 @Composable
@@ -389,7 +396,7 @@ fun TransactionMenu(
     } else if (groupBy == TransactionFilter.MONTH) {
         groupExpensesByMonth(items)
     } else {
-        groupExpensesByMonth(items)
+        groupExpensesByYear(items)
     }
 
     LazyColumn(contentPadding = PaddingValues(bottom = 135.dp)) {

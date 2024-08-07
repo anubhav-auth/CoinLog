@@ -98,9 +98,11 @@ class MainActivity : ComponentActivity() {
                             }
                             composable("home_screen") {
                                 Main(
+                                    scope = scope,
                                     financeViewmodel = financeViewmodel,
                                     authViewModel = authViewModel,
-                                    navController = navController
+                                    navController = navController,
+                                    padding = innerPadding
                                 )
                             }
                             composable("add_screen") {

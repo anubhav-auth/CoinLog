@@ -34,6 +34,10 @@ fun SignUpPage(viewModel: AuthViewModel, navController: NavController) {
         mutableStateOf("")
     }
 
+    var name by remember {
+        mutableStateOf("")
+    }
+
     val authState = viewModel.authState.collectAsState()
     val context = LocalContext.current
 
@@ -57,6 +61,16 @@ fun SignUpPage(viewModel: AuthViewModel, navController: NavController) {
         Text(text = "Signup Page", fontSize = 32.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = name,
+            onValueChange = {
+                name = it
+            },
+            label = {
+                Text(text = "Name")
+            }
+        )
 
         OutlinedTextField(
             value = email,

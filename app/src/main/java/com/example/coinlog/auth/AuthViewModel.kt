@@ -28,7 +28,7 @@ class AuthViewModel : ViewModel() {
     val authState = _authState.asStateFlow()
 
     private val _credential = MutableStateFlow<CredentialManager?>(null)
-    val credential = _credential.asStateFlow()
+    private val credential = _credential.asStateFlow()
 
     init {
         checkAuthStatus()
