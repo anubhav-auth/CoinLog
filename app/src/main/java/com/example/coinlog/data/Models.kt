@@ -7,12 +7,12 @@ import androidx.room.PrimaryKey
 data class Expenses(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val title: String,
-    val description: String,
-    val category: Category,
-    val credit: Boolean,
-    val amount: Double,
-    val dateAdded: Long,
+    val title: String = "",
+    val description: String = "",
+    val category: Category = Category.Miscellaneous,
+    val credit: Boolean = true,
+    val amount: Double = 0.0,
+    val dateAdded: Long = 0,
     val potId: Long? = null
 )
 

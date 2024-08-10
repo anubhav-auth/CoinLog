@@ -22,16 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.getString
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import androidx.navigation.NavController
-import com.example.coinlog.R
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginPage(viewModel: AuthViewModel, navController: NavController, scope: CoroutineScope) {

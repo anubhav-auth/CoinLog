@@ -2,7 +2,6 @@ package com.example.coinlog.presentation.homeScreen
 
 import android.annotation.SuppressLint
 import android.icu.text.DecimalFormat
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -369,6 +368,7 @@ fun groupExpensesByMonth(expenses: List<Expenses>): Map<String, List<Expenses>> 
         dateFormat.format(Date(expense.dateAdded))
     }
 }
+
 fun groupExpensesByYear(expenses: List<Expenses>): Map<String, List<Expenses>> {
     val dateFormat = SimpleDateFormat("yyyy")
     return expenses.groupBy { expense ->

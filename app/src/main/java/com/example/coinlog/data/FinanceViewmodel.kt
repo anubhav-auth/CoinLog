@@ -7,6 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coinlog.auth.AuthViewModel
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,8 +28,10 @@ class FinanceViewmodel(
     var selectedBottomItemIndex by mutableIntStateOf(0)
     var selectedCategory by mutableStateOf(Category.Miscellaneous)
     var selectedFilter by mutableStateOf(TransactionFilter.DAY)
+    var bottomSheetVisible by mutableStateOf(false)
 
     private val tag = "mytag"
+    private val fireStore = Firebase.firestore
 
     private val _incomeExpensesData = MutableStateFlow<Pair<List<ChartData>, List<ChartData>>>(
         Pair(
@@ -61,6 +67,27 @@ class FinanceViewmodel(
             _currentSummary.update {
                 summaryDao.getSummary() ?: Summary()
             }
+        }
+    }
+
+    fun uploadToCloud() {
+        AuthViewModel().uploadData(expenseDao, potDao, summaryDao, fireStore)
+    }
+
+    fun downloadFromCloud() {
+        viewModelScope.launch {
+
+            AuthViewModel().downloadData(expenseDao, potDao, summaryDao, fireStore)
+
+            delay(5000)// delay to let the data be downloaded then have the update function run
+
+            Log.d("myTag", "now")
+            _currentSummary.update {
+
+                summaryDao.getSummary() ?: Summary()
+            }
+
+
         }
     }
 

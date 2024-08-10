@@ -89,9 +89,11 @@ class MainActivity : ComponentActivity() {
                             }
                         ) {
                             composable("login_page") {
-                                LoginPage(viewModel = authViewModel,
+                                LoginPage(
+                                    viewModel = authViewModel,
                                     navController = navController,
-                                    scope = scope)
+                                    scope = scope
+                                )
                             }
                             composable("signup_page") {
                                 SignUpPage(viewModel = authViewModel, navController = navController)

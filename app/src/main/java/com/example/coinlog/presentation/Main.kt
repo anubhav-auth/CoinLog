@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
@@ -45,7 +44,12 @@ fun Main(
     BottomSheetScaffold(
         scaffoldState = mainScaffoldState,
         sheetContent = {
-            ConfirmLogout(sheetScaffoldState = mainScaffoldState, scope = scope, authViewModel = authViewModel)
+            ConfirmLogout(
+                sheetScaffoldState = mainScaffoldState,
+                scope = scope,
+                authViewModel = authViewModel,
+                financeViewmodel = financeViewmodel
+            )
         },
         sheetPeekHeight = 0.dp,
         sheetDragHandle = {}
@@ -63,9 +67,16 @@ fun Main(
                     navController = navController,
                     authViewModel = authViewModel
                 )
+
                 1 -> PotsScreen(financeViewmodel, navController)
                 2 -> AnalyticsScreen(financeViewmodel)
-                3 -> ProfileScreen(authViewModel, navController, scope = scope, scaffoldState = mainScaffoldState)
+                3 -> ProfileScreen(
+                    authViewModel,
+                    financeViewmodel,
+                    navController,
+                    scope = scope,
+                    scaffoldState = mainScaffoldState
+                )
             }
 
             BottomMenu(

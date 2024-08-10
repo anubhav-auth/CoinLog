@@ -1,7 +1,8 @@
 package com.example.coinlog.presentation.profile
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +42,7 @@ import coil.compose.AsyncImage
 import com.example.coinlog.R
 import com.example.coinlog.auth.AuthState
 import com.example.coinlog.auth.AuthViewModel
+import com.example.coinlog.data.FinanceViewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -54,10 +54,25 @@ fun String.firstName(): String {
 @Composable
 fun ProfileScreen(
     authViewModel: AuthViewModel,
+    financeViewmodel: FinanceViewmodel,
     navController: NavController,
     scope: CoroutineScope,
     scaffoldState: BottomSheetScaffoldState
 ) {
+
+
+    BackHandler(
+        enabled = financeViewmodel.bottomSheetVisible,
+        onBack = {
+            scope.launch {
+                scaffoldState.bottomSheetState
+                    .hide().also {
+                        financeViewmodel.bottomSheetVisible = false
+                    }
+            }
+        }
+    )
+
     val authstate = authViewModel.authState.collectAsState()
 
     LaunchedEffect(authstate.value) {
@@ -78,14 +93,15 @@ fun ProfileScreen(
                     R.drawable.finance_account,
                     "Account",
                     onClick = {
-
+                        financeViewmodel.uploadToCloud()
                     }
                 ),
                 OptionCardContent(
                     R.drawable.finance_settings,
                     "Settings",
                     onClick = {
-
+                        Log.d("mytag", "downloading.....")
+                        financeViewmodel.downloadFromCloud()
                     }
                 ),
                 OptionCardContent(
@@ -100,7 +116,9 @@ fun ProfileScreen(
                     "Logout",
                     onClick = {
                         scope.launch {
-                            scaffoldState.bottomSheetState.expand()
+                            scaffoldState.bottomSheetState.expand().also {
+                                financeViewmodel.bottomSheetVisible = true
+                            }
                         }
                     }
                 ),
@@ -114,7 +132,8 @@ fun ProfileScreen(
 fun ConfirmLogout(
     sheetScaffoldState: BottomSheetScaffoldState,
     scope: CoroutineScope,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    financeViewmodel: FinanceViewmodel
 ) {
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(12.dp))
@@ -137,7 +156,9 @@ fun ConfirmLogout(
             Button(
                 onClick = {
                     scope.launch {
-                        sheetScaffoldState.bottomSheetState.hide()
+                        sheetScaffoldState.bottomSheetState.hide().also {
+                            financeViewmodel.bottomSheetVisible = false
+                        }
                     }
                 },
                 modifier = Modifier.width(120.dp)
@@ -154,6 +175,7 @@ fun ConfirmLogout(
                 onClick = {
                     authViewModel.signOut()
                     authViewModel.credentialUpdate(false, null)
+                    financeViewmodel.bottomSheetVisible = false
                 },
                 modifier = Modifier.width(120.dp)
             ) {
