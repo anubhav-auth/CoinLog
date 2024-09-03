@@ -3,7 +3,7 @@
 
 
 <p align="center">
-  <img src="https://github.com/anubhav-auth/CoinLog/blob/fa394e9b182fa27ea7f25f38d087e71c7a2788a2/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg" alt="CoinLog Logo" style="width: 100%; max-width: 400px; height: auto;">
+  <img src="https://github.com/anubhav-auth/CoinLog/blob/fa394e9b182fa27ea7f25f38d087e71c7a2788a2/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg" alt="CoinLog Logo" style="width: 50%; max-width: 200px; height: auto;">
 </p>
 
 
