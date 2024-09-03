@@ -1,7 +1,8 @@
 # CoinLog - Financial Tracker App
 
-![CoinLog Logo](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg)
-
+<p align="center">
+  <img src="https://github.com/anubhav-auth/CoinLog/blob/fa394e9b182fa27ea7f25f38d087e71c7a2788a2/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg" alt="CoinLog Logo" style="width: 50%; max-width: 200px; height: auto;">
+</p>
 ## Overview
 
 **CoinLog** is your ultimate financial tracking app designed to help you manage and monitor your finances effortlessly. Whether you're keeping track of daily expenses, overseeing your total income and expenditures, or saving for specific goals with our unique "pots" feature, CoinLog makes it simple and intuitive.
@@ -47,8 +48,7 @@
 
 ## Demo
 
-[![Watch the demo](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenshot_2024-09-03-22-11-40-932_com.example.coinlog-edit.png)](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenrecorder-2024-09-03-22-45-35-243.mp4)  
-*Click the image above to watch a video demo of CoinLog in action.*
+https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenrecorder-2024-09-03-22-45-35-243.mp4
 
 ## Screenshots
 
