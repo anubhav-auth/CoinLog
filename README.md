@@ -1,6 +1,6 @@
 # CoinLog - Financial Tracker App
 
-![CoinLog Logo](https://drive.google.com/file/d/15vTzhoTxy4WavpuR3w-Md04zorAvpmBl/view?usp=drive_link)
+![CoinLog Logo](https://drive.google.com/file/d/15vTzhoTxy4WavpuR3w-Md04zorAvpmBl/view?usp=sharing)
 
 ## Overview
 
