@@ -1,15 +1,10 @@
 # CoinLog - Financial Tracker App
 
-
-
-<p align="center">
-  <img src="https://github.com/anubhav-auth/CoinLog/blob/fa394e9b182fa27ea7f25f38d087e71c7a2788a2/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg" alt="CoinLog Logo" style="width: 50%; max-width: 200px; height: auto;">
-</p>
-
+![CoinLog Logo](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg)
 
 ## Overview
 
-**CoinLog** is your go-to app for managing and monitoring your finances effortlessly. Whether you're tracking daily expenses, overseeing your total income and expenditure, or saving for specific goals with our unique "pots" feature, CoinLog makes it simple and intuitive.
+**CoinLog** is your ultimate financial tracking app designed to help you manage and monitor your finances effortlessly. Whether you're keeping track of daily expenses, overseeing your total income and expenditures, or saving for specific goals with our unique "pots" feature, CoinLog makes it simple and intuitive.
 
 ## Features
 
@@ -20,7 +15,7 @@
 
 ### 💰 Income & Expenditure Overview
 - Easily view your total income and expenditures in one place.
-- Get insights on your financial health with dynamic charts.
+- Gain insights into your financial health with dynamic charts.
 
 ### 🏦 Pots Feature
 - Allocate money into different "pots" (like digital piggy banks) for specific goals or occasions.
@@ -37,7 +32,7 @@
 ## Getting Started
 
 ### 1. Install the App
-- [Download the latest version](link_to_release) from the releases section.
+- [Download the latest version](https://github.com/anubhav-auth/CoinLog/releases) from the releases section.
 
 ### 2. Set Up Authentication
 - Sign in using Google or email to get started.
@@ -52,14 +47,14 @@
 
 ## Demo
 
-[![Watch the demo](link_to_demo_thumbnail_image)](link_to_demo_video)  
+[![Watch the demo](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenshot_2024-09-03-22-11-40-932_com.example.coinlog-edit.png)](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenrecorder-2024-09-03-22-45-35-243.mp4)  
 *Click the image above to watch a video demo of CoinLog in action.*
 
 ## Screenshots
 
-| Home Screen                          | Expense Tracking                   | Pots Feature                       |
-|--------------------------------------|------------------------------------|------------------------------------|
-| ![Home Screen](link_to_home_image)   | ![Expense Tracking](link_to_expense_image) | ![Pots Feature](link_to_pots_image) |
+| Home Screen                                                                 | Expense Tracking                                                               | Pots Feature                                                              |
+|------------------------------------------------------------------------------|--------------------------------------------------------------------------------|----------------------------------------------------------------------------|
+| ![Home Screen](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenshot_2024-09-03-22-11-13-232_com.example.coinlog-edit.png)  | ![Expense Tracking](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenshot_2024-09-03-22-11-40-932_com.example.coinlog-edit.png)  | ![Pots Feature](https://github.com/anubhav-auth/CoinLog/blob/master/Images/Screenshot_2024-09-03-22-11-23-611_com.example.coinlog-edit.png)  |
 
 ## Contributing
 
@@ -67,8 +62,8 @@ We welcome contributions! Please fork the repository and submit a pull request.
 
 ## License
 
-CoinLog is licensed under the [MIT License](LICENSE).
+CoinLog is licensed under the [MIT License](https://github.com/anubhav-auth/CoinLog/blob/master/LICENSE.txt).
 
 ## Contact
 
-For any questions or feedback, please contact [your email](mailto:youremail@example.com).
+For any questions or feedback, please reach out to [youremail@example.com](mailto:youremail@example.com).
