@@ -1,6 +1,6 @@
 # CoinLog - Financial Tracker App
 
-![CoinLog Logo](https://drive.google.com/file/d/15vTzhoTxy4WavpuR3w-Md04zorAvpmBl/view?usp=sharing)
+![CoinLog Logo](https://github.com/anubhav-auth/CoinLog/blob/fa394e9b182fa27ea7f25f38d087e71c7a2788a2/Images/Default_Take_the_letter_A_and_make_a_logo_out_of_it_2.jpg)
 
 ## Overview
 
